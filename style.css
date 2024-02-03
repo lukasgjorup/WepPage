@@ -1,5 +1,26 @@
 body{
     font-family:Verdana;
     font-size: 2em;
-
+}
+#contLable{
+    display: block;
+    text-align: center;
+    font-size: 10em;
+    font-family: Helvetica;
+}
+#btnContainer{
+display: block;
+text-align: center;
+}
+.buttons{
+    padding: 10px 20px;
+    font-size: 1.5em;
+    color: blue;
+    background-color: brown;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.25s;
+}
+.buttons:hover{
+    background-color: rgb(70, 37, 0);
 }
