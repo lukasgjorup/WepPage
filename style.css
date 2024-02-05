@@ -22,5 +22,18 @@ text-align: center;
     transition: background-color 0.25s;
 }
 .buttons:hover{
-    background-color: rgb(70, 37, 0);
+    background-color: black;
+}
+
+br {
+    line-height: 0%;
+ }
+
+.color{
+    padding: 10px 20px;
+    font-size: 1.5em;
+    background-color: black;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.25s;
 }
