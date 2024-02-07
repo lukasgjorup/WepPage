@@ -3,8 +3,8 @@ var paintBord = document.getElementById("paintBord");
 
 var isMouseDown = false;
 
-var gridSize = 100;
-var pixelSize = 2;
+var gridSize = 150;
+var pixelSize = 4;
 
 paintBord.addEventListener("mousedown", function(event) {
     isMouseDown = true;
