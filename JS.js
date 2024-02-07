@@ -1,39 +1,48 @@
-var btnContainer = document.getElementById("btnContainer");
+document.addEventListener("DOMContentLoaded", function(){
+var paintBord = document.getElementById("paintBord");
 
-// Define the number of rows and columns for buttons
-document.getElementById("sumit").onclick = function(){
-var X = Number(document.getElementById("XuserText").value);
-var Y = Number(document.getElementById("YuserText").value);
+var isMouseDown = false;
 
+var gridSize = 100;
+var pixelSize = 2;
 
-// Clear existing buttons in btnContainer
-btnContainer.innerHTML = "";
+paintBord.addEventListener("mousedown", function(event) {
+    isMouseDown = true;
+    updateDivClass(event.target);
+});
 
-// Loop to create buttons dynamically
-for (var j = 0; j < X; j++) {
-    for (var i = 0; i < Y; i++) {
-        // Create a button element
-        var button = document.createElement("button");
+paintBord.addEventListener("mouseup", function() {
+    isMouseDown = false;
+});
 
-        // Set button id and text content (you can customize this part)
-        button.id = "button_" + j + "_" + i;
-
-        //add to class buttons
-        button.classList.add("buttons");
-
-        // Append the button to the btnContainer
-        btnContainer.appendChild(button);
+paintBord.addEventListener("mouseover", function(event) {
+    if (isMouseDown) {
+        updateDivClass(event.target);
     }
-    btnContainer.appendChild(document.createElement("br"));
+});
+
+function updateDivClass(element) {
+    if (element.classList.contains("white")) {
+        element.classList.remove("white");
+        element.classList.add("black");
+    }
 }
 
 
-// Add click event listener to all buttons with class "buttons"
-var buttons = document.getElementsByClassName("buttons");
-for (var k = 0; k < buttons.length; k++) {
-    buttons[k].addEventListener("click", function () {
-        // Inside the click event handler, 'this' refers to the clicked button
-        this.classList.add("color");
-    });
-}
-};
+for(i=0;i<gridSize;i++){
+    for(j=0;j<gridSize;j++){
+
+    var newDiv= document.createElement("div");
+
+    newDiv.className = "white";
+
+    paintBord.appendChild(newDiv);
+}}
+
+
+paintBord.style.display = "grid";
+paintBord.style.gap = "0px";
+paintBord.style.border = "1px solid black";
+paintBord.style.gridTemplateColumns = `repeat(${gridSize}, ${pixelSize}px)`;
+paintBord.style.gridTemplateRows = `repeat(${gridSize}, ${pixelSize}px)`;
+});
