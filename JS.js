@@ -1,39 +1,71 @@
-var btnContainer = document.getElementById("btnContainer");
+document.addEventListener("DOMContentLoaded", function () {
+    var paintBord = document.getElementById("paintBord");
+    var isMouseDown = false;
 
-// Define the number of rows and columns for buttons
-document.getElementById("sumit").onclick = function(){
-var X = Number(document.getElementById("XuserText").value);
-var Y = Number(document.getElementById("YuserText").value);
+    var gridSize = 200;
+    var pixelSize = 3;
 
-
-// Clear existing buttons in btnContainer
-btnContainer.innerHTML = "";
-
-// Loop to create buttons dynamically
-for (var j = 0; j < X; j++) {
-    for (var i = 0; i < Y; i++) {
-        // Create a button element
-        var button = document.createElement("button");
-
-        // Set button id and text content (you can customize this part)
-        button.id = "button_" + j + "_" + i;
-
-        //add to class buttons
-        button.classList.add("buttons");
-
-        // Append the button to the btnContainer
-        btnContainer.appendChild(button);
+    function changeClass(element) {
+        element.classList.remove("white");
+        element.classList.add("black");
     }
-    btnContainer.appendChild(document.createElement("br"));
-}
 
+    function kongeId(x, y) {
+        return `${x},${y}`;
+    }
 
-// Add click event listener to all buttons with class "buttons"
-var buttons = document.getElementsByClassName("buttons");
-for (var k = 0; k < buttons.length; k++) {
-    buttons[k].addEventListener("click", function () {
-        // Inside the click event handler, 'this' refers to the clicked button
-        this.classList.add("color");
+    function droningId(x, y) {
+        let surroundingDiv = document.getElementById(kongeId(x, y));
+        if (surroundingDiv && surroundingDiv.classList.contains("white")) {
+            changeClass(surroundingDiv);
+        }
+    }
+
+    paintBord.addEventListener("mousedown", function (event) {
+        isMouseDown = true;
+        updateDivClass(event.target);
     });
-}
-};
+
+    paintBord.addEventListener("mouseup", function () {
+        isMouseDown = false;
+    });
+
+    paintBord.addEventListener("mouseover", function (event) {
+        if (isMouseDown) {
+            console.log(`${event.target.id}`);
+            updateDivClass(event.target);
+        }
+    });
+
+    function updateDivClass(element) {
+            let [x, y] = element.id.split(",").map(Number);
+            for (let i = -2; i <= 2; i++) {
+                for (let j = -2; j <= 2; j++) {
+                   
+                    droningId(x + j, y + i);
+                }
+            }
+            changeClass(element);
+    }
+
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+            var newDiv = document.createElement("div");
+            newDiv.id = kongeId(i, j);
+            newDiv.className = "white";
+            paintBord.appendChild(newDiv);
+        }
+    }
+
+    paintBord.style.position = "absolute";
+    paintBord.style.width = "100vw";
+    paintBord.style.height = "100vh";
+    paintBord.style.top = "0";
+    paintBord.style.left = "0";
+
+    paintBord.style.display = "grid";
+    paintBord.style.gap = "0px";
+    paintBord.style.border = "2px solid black";
+    paintBord.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+    paintBord.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
+});
