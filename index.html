@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link href="stylesheet.css" type="text/css" rel="stylesheet"/>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -24,10 +24,9 @@
     <div class ="options">
         <button onclick="clearCanvas()" id = "clearCanvas" class="color">Clear canvas</button>
         <input oninput="draw_color = this.value" type = "color" class="colorpick">
-        <input oninput="draw_withd = this.value" type="range" min="1" max="100" class="pen" style="background-color: black;">
+        <input oninput="draw_withd = this.value" type="range" min="1" max="100" class="pen">
     </div>
 
 </body>
-
-<script src = "Javascript.js"></script>
+<script src = "JS.js"></script>
 </html>
