@@ -1,48 +1,60 @@
-document.addEventListener("DOMContentLoaded", function(){
-var paintBord = document.getElementById("paintBord");
+const canvas = document.getElementById("canvas");
+canvas.width = window.innerWidth - 60;
+canvas.height = 600;
 
-var isMouseDown = false;
+let startBackground = "white";
+let draw_color = "black";
+let draw_withd = "50";
+let is_drawing = false;
 
-var gridSize = 150;
-var pixelSize = 4;
 
-paintBord.addEventListener("mousedown", function(event) {
-    isMouseDown = true;
-    updateDivClass(event.target);
-});
+let context = canvas.getContext("2d");
+context.fillStyle = startBackground;
+context.fillRect(0,0,canvas.width,canvas.height);
 
-paintBord.addEventListener("mouseup", function() {
-    isMouseDown = false;
-});
+function changeColor(element){
+    draw_color = element.style.backgroundColor;
+}
 
-paintBord.addEventListener("mouseover", function(event) {
-    if (isMouseDown) {
-        updateDivClass(event.target);
-    }
-});
+canvas.addEventListener("touchstart",start);
+canvas.addEventListener("touchmove",draw);
+canvas.addEventListener("mousedown",start);
+canvas.addEventListener("mousemove",draw);
 
-function updateDivClass(element) {
-    if (element.classList.contains("white")) {
-        element.classList.remove("white");
-        element.classList.add("black");
+canvas.addEventListener("touchend",stop);
+canvas.addEventListener("mouseup",stop);
+canvas.addEventListener("mouseout",stop);
+
+
+function start(event){
+   is_drawing = true;
+   context.beginPath();
+   context.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+}
+
+function draw(event) {
+    if (is_drawing) {
+        context.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+        context.strokeStyle = draw_color;
+        context.lineWidth = draw_withd;
+        context.lineCap = "round";
+        context.lineJoin = "round";
+        context.stroke();
     }
 }
 
+function stop(event){
+    if (is_drawing){
+        context.stroke();
+        context.closePath();
+        is_drawing = false;
+    }
 
-for(i=0;i<gridSize;i++){
-    for(j=0;j<gridSize;j++){
+}
 
-    var newDiv= document.createElement("div");
+function clearCanvas() {
+    context.fillStyle = startBackground;
+    context.clearRect(0,0,canvas.width,canvas.height);
+    context.fillRect(0,0,canvas.width,canvas.height);
 
-    newDiv.className = "white";
-
-    paintBord.appendChild(newDiv);
-}}
-
-
-paintBord.style.display = "grid";
-paintBord.style.gap = "0px";
-paintBord.style.border = "1px solid black";
-paintBord.style.gridTemplateColumns = `repeat(${gridSize}, ${pixelSize}px)`;
-paintBord.style.gridTemplateRows = `repeat(${gridSize}, ${pixelSize}px)`;
-});
+}

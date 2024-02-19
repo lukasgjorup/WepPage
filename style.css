@@ -1,19 +1,25 @@
-body {
+body{
+    background-color: grey;
+}
+
+canvas{
+    border: 6px black;
+}
+
+.options{
     display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
 }
 
-.black {
-    width: 100%;
-    height: 100%;
-    background-color: black;
+.colors{
+    display: flex;
 }
 
-.white{
-    width: 100%;
-    height: 100%;
-    background-color: white
+.color{
+    height: 50px;
+    width: 100px;
+}
+
+.colorpick{
+    height: 50px;
+    width: 100px;
 }
