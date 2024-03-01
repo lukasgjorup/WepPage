@@ -2,13 +2,11 @@ const canvas = document.getElementById("canvas");
 canvas.width = window.innerWidth - 60;
 canvas.height = 600;
 
-let bush = true;
 let startBackground = "white";
 let draw_color = "black";
 let draw_withd = "50";
 let is_drawing = false;
-let pathArray = [];
-var index = -1;
+
 
 let context = canvas.getContext("2d");
 context.fillStyle = startBackground;
@@ -26,18 +24,6 @@ canvas.addEventListener("mousemove",draw);
 canvas.addEventListener("touchend",stop);
 canvas.addEventListener("mouseup",stop);
 canvas.addEventListener("mouseout",stop);
-
-function eraser(){ draw_color ="white";}
-
-function goBack(){
-    if(index <= 0){
-    clearCanvas();
-    }else{
-    index -= 1;
-    pathArray.pop();
-    context.putImageData(pathArray[index],0,0);
-    }
-}
 
 
 function start(event){
@@ -64,16 +50,11 @@ function stop(event){
         is_drawing = false;
     }
 
-    if(event.type != 'mouseout'){
-        pathArray.push(context.getImageData(0,0,canvas.width,canvas.height));
-        index += 1;
-    }
 }
 
 function clearCanvas() {
     context.fillStyle = startBackground;
     context.clearRect(0,0,canvas.width,canvas.height);
     context.fillRect(0,0,canvas.width,canvas.height);
-    pathArray = [];
-    index = -1;
+
 }
