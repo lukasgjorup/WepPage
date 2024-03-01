@@ -1,71 +1,79 @@
-document.addEventListener("DOMContentLoaded", function () {
-    var paintBord = document.getElementById("paintBord");
-    var isMouseDown = false;
+const canvas = document.getElementById("canvas");
+canvas.width = window.innerWidth - 60;
+canvas.height = 600;
 
-    var gridSize = 200;
-    var pixelSize = 3;
+let bush = true;
+let startBackground = "white";
+let draw_color = "black";
+let draw_withd = "50";
+let is_drawing = false;
+let pathArray = [];
+var index = -1;
 
-    function changeClass(element) {
-        element.classList.remove("white");
-        element.classList.add("black");
+let context = canvas.getContext("2d");
+context.fillStyle = startBackground;
+context.fillRect(0,0,canvas.width,canvas.height);
+
+function changeColor(element){
+    draw_color = element.style.backgroundColor;
+}
+
+canvas.addEventListener("touchstart",start);
+canvas.addEventListener("touchmove",draw);
+canvas.addEventListener("mousedown",start);
+canvas.addEventListener("mousemove",draw);
+
+canvas.addEventListener("touchend",stop);
+canvas.addEventListener("mouseup",stop);
+canvas.addEventListener("mouseout",stop);
+
+function eraser(){ draw_color ="white";}
+
+function goBack(){
+    if(index <= 0){
+    clearCanvas();
+    }else{
+    index -= 1;
+    pathArray.pop();
+    context.putImageData(pathArray[index],0,0);
+    }
+}
+
+
+function start(event){
+   is_drawing = true;
+   context.beginPath();
+   context.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+}
+
+function draw(event) {
+    if (is_drawing) {
+        context.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+        context.strokeStyle = draw_color;
+        context.lineWidth = draw_withd;
+        context.lineCap = "round";
+        context.lineJoin = "round";
+        context.stroke();
+    }
+}
+
+function stop(event){
+    if (is_drawing){
+        context.stroke();
+        context.closePath();
+        is_drawing = false;
     }
 
-    function kongeId(x, y) {
-        return `${x},${y}`;
+    if(event.type != 'mouseout'){
+        pathArray.push(context.getImageData(0,0,canvas.width,canvas.height));
+        index += 1;
     }
+}
 
-    function droningId(x, y) {
-        let surroundingDiv = document.getElementById(kongeId(x, y));
-        if (surroundingDiv && surroundingDiv.classList.contains("white")) {
-            changeClass(surroundingDiv);
-        }
-    }
-
-    paintBord.addEventListener("mousedown", function (event) {
-        isMouseDown = true;
-        updateDivClass(event.target);
-    });
-
-    paintBord.addEventListener("mouseup", function () {
-        isMouseDown = false;
-    });
-
-    paintBord.addEventListener("mouseover", function (event) {
-        if (isMouseDown) {
-            console.log(`${event.target.id}`);
-            updateDivClass(event.target);
-        }
-    });
-
-    function updateDivClass(element) {
-            let [x, y] = element.id.split(",").map(Number);
-            for (let i = -2; i <= 2; i++) {
-                for (let j = -2; j <= 2; j++) {
-                   
-                    droningId(x + j, y + i);
-                }
-            }
-            changeClass(element);
-    }
-
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
-            var newDiv = document.createElement("div");
-            newDiv.id = kongeId(i, j);
-            newDiv.className = "white";
-            paintBord.appendChild(newDiv);
-        }
-    }
-
-    paintBord.style.position = "absolute";
-    paintBord.style.width = "100vw";
-    paintBord.style.height = "100vh";
-    paintBord.style.top = "0";
-    paintBord.style.left = "0";
-
-    paintBord.style.display = "grid";
-    paintBord.style.gap = "0px";
-    paintBord.style.border = "2px solid black";
-    paintBord.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
-    paintBord.style.gridTemplateRows = `repeat(${gridSize}, 1fr)`;
-});
+function clearCanvas() {
+    context.fillStyle = startBackground;
+    context.clearRect(0,0,canvas.width,canvas.height);
+    context.fillRect(0,0,canvas.width,canvas.height);
+    pathArray = [];
+    index = -1;
+}

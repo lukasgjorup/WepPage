@@ -3,13 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MY WEPPAGE</title>
+    <title>Document</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div id ="paintBord">
-      
+    <canvas id = "canvas"></canvas>    
+    <div class="colors">
+        <button class="color" style="background-color: black;" onclick="changeColor(this)"><img src="icons/brush.svg" alt="brush"></button>
+        <button class="color" style="background-color: red;" onclick="changeColor(this)"><img src="icons/brush.svg" alt="brush"></button>
+        <button class="color" style="background-color: green;" onclick="changeColor(this)"><img src="icons/brush.svg" alt="brush"></button>
+        <button class="color" style="background-color: yellow;" onclick="changeColor(this)"><img src="icons/brush.svg" alt="brush"></button>
+        <button class="color" style="background-color: purple;" onclick="changeColor(this)"><img src="icons/brush.svg" alt="brush"></button>
+        <button class="color" style="background-color: brown;" onclick="changeColor(this)"><img src="icons/brush.svg" alt="brush"></button>
+        <button class="color" style="background-color: wheat;" onclick="changeColor(this)"><img src="icons/brush.svg" alt="brush"></button>
+        <button class="color" style="background-color: indianred;" onclick="changeColor(this)"><img src="icons/brush.svg" alt="brush"></button>
+        <button class="color" style="background-color: orchid;" onclick="changeColor(this)"><img src="icons/brush.svg" alt="brush"></button>
+        <button class="color" style="background-color: paleturquoise;" onclick="changeColor(this)"><img src="icons/brush.svg" alt="brush"></button>
     </div>
-    <script src = "JS.js"></script>
+    <div class ="options">
+        <button onclick="eraser()"><img src="icons/eraser.svg" alt="eraser"></button>
+        <button onclick="clearCanvas()" id = "clearCanvas" class="color">Clear canvas</button>
+        <input oninput="draw_color = this.value" type = "color" class="colorpick">
+        <input oninput="draw_withd = this.value" type="range" min="1" max="100" class="pen">
+        <button onclick="goBack()"></button>
+    </div>
+
 </body>
+<script src = "JS.js"></script>
 </html>
