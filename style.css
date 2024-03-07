@@ -10,7 +10,8 @@ body{
 
 .nav{
     width: auto;
-    height: 50px;
+    max-width: 70%;
+    height: 8%;
     position: fixed;
     top: 1%;
     left: 50%;
