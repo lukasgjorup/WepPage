@@ -6,26 +6,58 @@ body{
 }
 .disable-dbl-tap-zoom {
     touch-action: manipulation;
-  }
+}
 
-canvas{
-    border: 6px black;
+.nav{
+    width: auto;
+    height: 50px;
+    position: fixed;
+    top: 1%;
+    left: 50%;
+    transform: translate(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    transition: opacity .5s;
+    background: linear-gradient(to right, blue,red);
+    padding: 10px;
+    border-radius: 10px;
+    border: 3px solid white;
+}
+
+.nav button,input{
+    margin: 5px;
+    border: 3px solid white;
+}
+
+nav:hover{
+    cursor: pointer;
 }
 
 .options{
     display: flex;
+    
 }
+.options button{
+    border-radius: 20%;
+    background: linear-gradient(to right, rgb(207, 106, 106),rgb(97, 97, 223));
+    
+}
+
 
 .colors{
     display: flex;
 }
 
 .color{
-    height: 50px;
-    width: 100px;
+    border-radius: 50%;
+    height: 35px;
+    width: 35px;
 }
 
-.colorpick{
+#colorpick{
+    border-radius: 20%;
+    background: linear-gradient(to right, rgb(207, 106, 106),rgb(97, 97, 223));
     height: 50px;
     width: 100px;
 }

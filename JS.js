@@ -1,7 +1,7 @@
 //here we get element id of canvas and determin its hight and width
 const canvas = document.getElementById("canvas");
-canvas.width = window.innerWidth - 60;
-canvas.height = 600;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 //initilize some variables essential for the program
 let startBackground = "white";
