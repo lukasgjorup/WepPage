@@ -52,6 +52,7 @@ nav:hover{
 
 .color{
     border-radius: 50%;
+    max-height: 7%;
     height: 35px;
     width: 35px;
 }
