@@ -98,8 +98,8 @@ function clearCanvas() {
     context.fillRect(0,0,canvas.width,canvas.height);
 
     //resets undofunction
-    let undoarray = [];
-    let undoindex = -1;
+    undoarray = [];
+    undoindex = -1;
 }
 
 //undo function that makes it possible to undo stuff
