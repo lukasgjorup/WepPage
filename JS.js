@@ -1,7 +1,7 @@
 //here we get element id of canvas and determin its hight and width
 const canvas = document.getElementById("canvas");
 canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.height = window.innerHeight-5;
 
 //initilize some variables essential for the program
 let startBackground = "white";
@@ -29,6 +29,7 @@ function changeColor(element){
     draw_color = element.style.backgroundColor;
 }
 
+let canvasPosition = canvas.getBoundingClientRect();
 //here is all the addEventListeners that tells us when to start drawing.
 //touch is ment for screens you touch such as phones while mouse is for mouse.
 canvas.addEventListener("touchstart",start);
@@ -117,3 +118,10 @@ function undo() {
 
 
 }
+window.addEventListener('resize',function(){
+    canvasPosition = canvas.getBoundingClientRect();
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight-5;
+    context.fillStyle = startBackground;
+    context.fillRect(0,0,canvas.width,canvas.height);
+});
