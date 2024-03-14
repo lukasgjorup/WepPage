@@ -48,7 +48,11 @@ function start(event){
    is_drawing = true;
    context.beginPath();
    //set start cordinat on canvas for path.
-   context.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+   if (event.type == 'touchmove'){
+    context.moveTo(event.touches[0].clientX, event.touches[0].clientY);
+  } else if (event.type == 'mousemove'){
+    context.moveTo(event.clientX, event.clientY);
+  }
    //run brush one time so that if you click one time you will still have drawn a dot.
    brush(event);
 }
@@ -59,10 +63,7 @@ function draw(event) {
         if (selectedTool === 1){
             brush(event);
         }else if (selectedTool === 2){
-            
-
-
-
+        
         }
     
     }
@@ -70,7 +71,11 @@ function draw(event) {
 
 //brush is one of the selected tools. And can draw.
 function brush(event){
-    context.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+    if (event.type == 'touchmove'){
+        context.lineTo(event.touches[0].clientX, event.touches[0].clientY);
+    }else if (event.type == 'mousemove'){
+        context.lineTo(event.clientX, event.clientY);
+    }
     context.strokeStyle = draw_color;
     context.lineWidth = draw_withd;
     context.lineCap = "round";
