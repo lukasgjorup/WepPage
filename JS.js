@@ -62,6 +62,7 @@ canvas.addEventListener("mouseout",stop);
 
 //function that starts a path
 function start(event){
+   event.preventDefault()
    is_drawing = true;
    context.beginPath();
    //set start cordinat on canvas for path.
@@ -72,6 +73,7 @@ function start(event){
 
 //draw function is called continuesly and depending on the selected tool do different stuff.
 function draw(event) {
+    event.preventDefault()
     if (is_drawing) {
         if (selectedTool === 1){
             brush(event);
