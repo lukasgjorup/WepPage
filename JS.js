@@ -3,6 +3,7 @@ const canvas = document.getElementById("canvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight-5;
 
+stopTouchScrolling(document.getElementById('canvas'));
 //initilize some variables essential for the program
 let startBackground = "white";
 let draw_color = "black";
