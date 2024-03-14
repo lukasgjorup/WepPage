@@ -8,6 +8,7 @@
 
 }
 body{
+    overflow-x:hidden;
     touch-action:none;
     background-color: grey;
     max-width: 100%;
