@@ -33,9 +33,18 @@ let canvasPosition = canvas.getBoundingClientRect();
 //here is all the addEventListeners that tells us when to start drawing.
 //touch is ment for screens you touch such as phones while mouse is for mouse.
 canvas.addEventListener("touchstart",start);
-canvas.addEventListener("touchmove",draw);
+canvas.addEventListener("touchmove", function (e) {
+    var touch = e.touches[0];
+    var mouseEvent = new MouseEvent("mousemove", {
+      clientX: touch.clientX,
+      clientY: touch.clientY
+    });
+    draw(mouseEvent);
+}, false);
+
 canvas.addEventListener("mousedown",start);
 canvas.addEventListener("mousemove",draw);
+
 
 //here is the reasons to stop drawing. lift finger from phone or mouse up
 //or you moving mouse outside of the object canvas.
@@ -48,11 +57,7 @@ function start(event){
    is_drawing = true;
    context.beginPath();
    //set start cordinat on canvas for path.
-   if (event.type == 'touchmove'){
-    context.moveTo(event.touches[0].clientX, event.touches[0].clientY);
-  } else if (event.type == 'mousemove'){
     context.moveTo(event.clientX, event.clientY);
-  }
    //run brush one time so that if you click one time you will still have drawn a dot.
    brush(event);
 }
@@ -71,11 +76,7 @@ function draw(event) {
 
 //brush is one of the selected tools. And can draw.
 function brush(event){
-    if (event.type == 'touchmove'){
-        context.lineTo(event.touches[0].clientX, event.touches[0].clientY);
-    }else if (event.type == 'mousemove'){
-        context.lineTo(event.clientX, event.clientY);
-    }
+    context.lineTo(event.clientX, event.clientY);
     context.strokeStyle = draw_color;
     context.lineWidth = draw_withd;
     context.lineCap = "round";
