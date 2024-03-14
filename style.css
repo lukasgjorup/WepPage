@@ -41,7 +41,6 @@ body{
     @media (max-width: 640px) {
         .nav {
            width:50%;
-           height: 50%;
         }
     }
 }
