@@ -1,4 +1,5 @@
 *{
+    touch-action:none;
     margin: 0;
     padding: 0;
     /*border-box means that padding and border is also within the objects hight and witdh*/
@@ -7,6 +8,7 @@
 
 }
 body{
+    touch-action:none;
     background-color: grey;
     max-width: 100%;
     max-height: 100%;
@@ -15,8 +17,12 @@ body{
 .disable-dbl-tap-zoom {
     touch-action: manipulation;
 }
+#canvas{
+    touch-action:none;
+}
 
 .nav{
+    touch-action:none;
     width: auto;
     height: 8%;
     position: fixed;
