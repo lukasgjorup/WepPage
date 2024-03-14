@@ -33,6 +33,9 @@ let canvasPosition = canvas.getBoundingClientRect();
 //here is all the addEventListeners that tells us when to start drawing.
 //touch is ment for screens you touch such as phones while mouse is for mouse.
 canvas.addEventListener("touchstart",function (event) {
+    if (event.target == canvas) {
+        event.preventDefault();
+    }
     var touch = event.touches[0];
     var mouseEvent = new MouseEvent("mousedown", {
       clientX: touch.clientX,
@@ -42,6 +45,9 @@ canvas.addEventListener("touchstart",function (event) {
 });
 
 canvas.addEventListener("touchmove", function (event) {
+    if (event.target == canvas) {
+        event.preventDefault();
+    }
     var touch = event.touches[0];
     var mouseEvent = new MouseEvent("mousemove", {
       clientX: touch.clientX,
@@ -50,8 +56,18 @@ canvas.addEventListener("touchmove", function (event) {
     draw(mouseEvent);
 });
 
-canvas.addEventListener("mousedown",start);
-canvas.addEventListener("mousemove",draw);
+canvas.addEventListener("mousedown", function (event) {
+    if (event.target == canvas) {
+        event.preventDefault();
+    }
+    start(event);
+});
+canvas.addEventListener("mousemove", function (event) {
+    if (event.target == canvas) {
+        event.preventDefault();
+    }
+    draw(event);
+});
 
 
 //here is the reasons to stop drawing. lift finger from phone or mouse up
@@ -62,7 +78,6 @@ canvas.addEventListener("mouseout",stop);
 
 //function that starts a path
 function start(event){
-   event.preventDefault()
    is_drawing = true;
    context.beginPath();
    //set start cordinat on canvas for path.
@@ -73,7 +88,6 @@ function start(event){
 
 //draw function is called continuesly and depending on the selected tool do different stuff.
 function draw(event) {
-    event.preventDefault()
     if (is_drawing) {
         if (selectedTool === 1){
             brush(event);
