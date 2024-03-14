@@ -32,15 +32,23 @@ function changeColor(element){
 let canvasPosition = canvas.getBoundingClientRect();
 //here is all the addEventListeners that tells us when to start drawing.
 //touch is ment for screens you touch such as phones while mouse is for mouse.
-canvas.addEventListener("touchstart",start);
-canvas.addEventListener("touchmove", function (e) {
-    var touch = e.touches[0];
+canvas.addEventListener("touchstart",function (event) {
+    var touch = event.touches[0];
+    var mouseEvent = new MouseEvent("mousedown", {
+      clientX: touch.clientX,
+      clientY: touch.clientY
+    });
+    start(mouseEvent);
+});
+
+canvas.addEventListener("touchmove", function (event) {
+    var touch = event.touches[0];
     var mouseEvent = new MouseEvent("mousemove", {
       clientX: touch.clientX,
       clientY: touch.clientY
     });
     draw(mouseEvent);
-}, false);
+});
 
 canvas.addEventListener("mousedown",start);
 canvas.addEventListener("mousemove",draw);
@@ -57,7 +65,7 @@ function start(event){
    is_drawing = true;
    context.beginPath();
    //set start cordinat on canvas for path.
-    context.moveTo(event.clientX, event.clientY);
+   context.moveTo(event.clientX, event.clientY);
    //run brush one time so that if you click one time you will still have drawn a dot.
    brush(event);
 }
