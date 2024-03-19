@@ -9,8 +9,6 @@ let draw_color = "black";
 let draw_withd = "50";
 let is_drawing = false;
 
-stopTouchScrolling(document.getElementById('canvas'));
-
 //1 is pensel, 2 is rectangels, idk rest
 let selectedTool = 1;
 
@@ -26,12 +24,16 @@ let context = canvas.getContext("2d");
 context.fillStyle = startBackground;
 context.fillRect(0,0,canvas.width,canvas.height);
 
+
 //this function works together with buttons in the html file to change draw_color
 function changeColor(element){
     draw_color = element.style.backgroundColor;
 }
 
 let canvasPosition = canvas.getBoundingClientRect();
+
+stopTouchScrolling(document.getElementById('canvas'));
+
 //here is all the addEventListeners that tells us when to start drawing.
 //touch is ment for screens you touch such as phones while mouse is for mouse.
 canvas.addEventListener("touchstart",function (event) {
