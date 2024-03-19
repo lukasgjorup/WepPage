@@ -9,10 +9,7 @@ let draw_color = "black";
 let draw_withd = "50";
 let is_drawing = false;
 
-var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-    stopTouchScrolling(document.getElementById('canvas'));
-}
+stopTouchScrolling(document.getElementById('canvas'));
 
 //1 is pensel, 2 is rectangels, idk rest
 let selectedTool = 1;
