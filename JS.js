@@ -3,12 +3,16 @@ const canvas = document.getElementById("canvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight-5;
 
-stopTouchScrolling(document.getElementById('canvas'));
 //initilize some variables essential for the program
 let startBackground = "white";
 let draw_color = "black";
 let draw_withd = "50";
 let is_drawing = false;
+
+var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+    stopTouchScrolling(document.getElementById('canvas'));
+}
 
 //1 is pensel, 2 is rectangels, idk rest
 let selectedTool = 1;
