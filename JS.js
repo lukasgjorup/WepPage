@@ -32,7 +32,7 @@ function changeColor(element){
 
 if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
     stopTouchScrolling(document.getElementById('canvas'));
-  }
+}
 
 //here is all the addEventListeners that tells us when to start drawing.
 //touch is ment for screens you touch such as phones while mouse is for mouse.
