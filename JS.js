@@ -2,7 +2,6 @@
 const canvas = document.getElementById("canvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight-5;
-
 //initilize some variables essential for the program
 let startBackground = "white";
 let draw_color = "black";
@@ -30,16 +29,15 @@ function changeColor(element){
     draw_color = element.style.backgroundColor;
 }
 
-let canvasPosition = canvas.getBoundingClientRect();
 
-stopTouchScrolling(document.getElementById('canvas'));
+if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+    stopTouchScrolling(document.getElementById('canvas'));
+  }
 
 //here is all the addEventListeners that tells us when to start drawing.
 //touch is ment for screens you touch such as phones while mouse is for mouse.
 canvas.addEventListener("touchstart",function (event) {
-    if (event.target == canvas) {
-        event.preventDefault();
-    }
+    event.preventDefault();
     var touch = event.touches[0];
     var mouseEvent = new MouseEvent("mousedown", {
       clientX: touch.clientX,
@@ -49,9 +47,7 @@ canvas.addEventListener("touchstart",function (event) {
 });
 
 canvas.addEventListener("touchmove", function (event) {
-    if (event.target == canvas) {
         event.preventDefault();
-    }
     var touch = event.touches[0];
     var mouseEvent = new MouseEvent("mousemove", {
       clientX: touch.clientX,
@@ -60,18 +56,8 @@ canvas.addEventListener("touchmove", function (event) {
     draw(mouseEvent);
 });
 
-canvas.addEventListener("mousedown", function (event) {
-    if (event.target == canvas) {
-        event.preventDefault();
-    }
-    start(event);
-});
-canvas.addEventListener("mousemove", function (event) {
-    if (event.target == canvas) {
-        event.preventDefault();
-    }
-    draw(event);
-});
+canvas.addEventListener("mousedown", start);
+canvas.addEventListener("mousemove", draw);
 
 
 //here is the reasons to stop drawing. lift finger from phone or mouse up
@@ -149,13 +135,12 @@ function undo() {
         //here we wanty to insert the last saved in the undo into the canvas.
         context.putImageData(undoarray[undoindex],0,0);
     }
-
-
 }
+
 window.addEventListener('resize',function(){
-    canvasPosition = canvas.getBoundingClientRect();
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight-5;
     context.fillStyle = startBackground;
     context.fillRect(0,0,canvas.width,canvas.height);
+    context.putImageData(undoarray[undoindex],0,0);
 });
