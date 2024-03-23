@@ -7,6 +7,7 @@ let startBackground = "white";
 let draw_color = "black";
 let draw_withd = "50";
 let is_drawing = false;
+let phone = false;
 
 //1 is pensel, 2 is rectangels, idk rest
 let selectedTool = 1;
@@ -32,6 +33,7 @@ function changeColor(element){
 
 if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
     stopTouchScrolling(document.getElementById('canvas'));
+    phone = true;
 }
 
 //here is all the addEventListeners that tells us when to start drawing.
@@ -67,20 +69,25 @@ canvas.addEventListener("mouseup",stop);
 canvas.addEventListener("mouseout",stop);
 
 //function that starts a path
-function start(event){
+function start(event,mouseEvent){
    is_drawing = true;
    context.beginPath();
    //set start cordinat on canvas for path.
-   context.moveTo(event.clientX, event.clientY);
+   if(phone){
+    context.moveTo(mouseEvent.clientX, mouseEvent.clientY);
+    brush(mouseEvent);
+   }else{
+    context.moveTo(event.clientX, event.clientY);
+    brush(event);
+   }
    //run brush one time so that if you click one time you will still have drawn a dot.
-   brush(event);
 }
 
 //draw function is called continuesly and depending on the selected tool do different stuff.
-function draw(event) {
+function draw(event,mouseEvent) {
     if (is_drawing) {
         if (selectedTool === 1){
-            brush(event);
+            brush(event,mouseEvent);
         }else if (selectedTool === 2){
         
         }
@@ -89,14 +96,18 @@ function draw(event) {
 }
 
 //brush is one of the selected tools. And can draw.
-function brush(event){
-    context.lineTo(event.clientX, event.clientY);
+function brush(event,mouseEvent){
     context.strokeStyle = draw_color;
     context.lineWidth = draw_withd;
     context.lineCap = "round";
     context.lineJoin = "round";
+    if(phone){
+        context.lineTo(mouseEvent.clientX, mouseEvent.clientY);
+        context.stroke();
+    }else{
+    context.lineTo(event.clientX, event.clientY);
     context.stroke();
-
+    }
 }
 
 //stop is the function that is called when we want to stop drawing
