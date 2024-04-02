@@ -1,16 +1,22 @@
 //here we get element id of canvas and determin its hight and width
 const canvas = document.getElementById("canvas");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight-5;
+let width = canvas.offsetWidth;
+let height = canvas.offsetHeight;
+
+// io
+const socket = io("http://localhost:3000");
+
+canvas.width = width;
+canvas.height = height;
 //initilize some variables essential for the program
-let startBackground = "white";
+const startBackground = "white";
 let draw_color = "black";
-let draw_withd = "50";
+const draw_withd = "50";
 let is_drawing = false;
-let phone = false;
+//let phone = false;
 
 //1 is pensel, 2 is rectangels, idk rest
-let selectedTool = 1;
+const selectedTool = 1;
 
 //used for undo function
 let undoarray = [];
@@ -18,76 +24,91 @@ let undoindex = -1;
 
 //here we make a essential variable context that you can use to change the
 //context of the canvas
-let context = canvas.getContext("2d");
+const context = canvas.getContext("2d");
+context.lineCap = "round";
+context.lineJoin = "round";
 //then we fill background so its white and determin it should be white from starting point
 //0,0 because the canvas starts in the top left cornor. Then it should fill canvas width x canvas hight in
 context.fillStyle = startBackground;
 context.fillRect(0,0,canvas.width,canvas.height);
 
+const canvasPosition = canvas.getBoundingClientRect();
 
 //this function works together with buttons in the html file to change draw_color
 function changeColor(element){
     draw_color = element.style.backgroundColor;
 }
 
+const mouse ={
+    x : canvas.width/2,
+    y : canvas.height/2
+};
 
 if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-    stopTouchScrolling(document.getElementById('canvas'));
-    phone = true;
+    stopTouchScrolling(canvas);
+   // phone = true;
 }
+
 
 //here is all the addEventListeners that tells us when to start drawing.
 //touch is ment for screens you touch such as phones while mouse is for mouse.
+/*
 canvas.addEventListener("touchstart",function (event) {
-    event.preventDefault();
-    var touch = event.touches[0];
-    var mouseEvent = new MouseEvent("mousedown", {
-      clientX: touch.clientX,
-      clientY: touch.clientY
-    });
-    start(mouseEvent);
+    mouse.x = event.x - canvasPosition.left;
+    mouse.y = event.y - canvasPosition.top;
+    
+    start(mouse);
 });
 
 canvas.addEventListener("touchmove", function (event) {
-        event.preventDefault();
-    var touch = event.touches[0];
-    var mouseEvent = new MouseEvent("mousemove", {
-      clientX: touch.clientX,
-      clientY: touch.clientY
-    });
-    draw(mouseEvent);
+    mouse.x = event.x - canvasPosition.left;
+    mouse.y = event.y - canvasPosition.top;
+
+    draw(mouse);
+});
+canvas.addEventListener("touchend",stop);
+*/
+canvas.addEventListener("pointerdown", function(event){
+    mouse.x = event.x - canvasPosition.left;
+    mouse.y = event.y - canvasPosition.top;
+    
+    start(mouse);
 });
 
-canvas.addEventListener("mousedown", start);
-canvas.addEventListener("mousemove", draw);
+canvas.addEventListener("pointermove", function(event){
+    mouse.x = event.x - canvasPosition.left;
+    mouse.y = event.y - canvasPosition.top;
 
+    draw(mouse);
+});
 
 //here is the reasons to stop drawing. lift finger from phone or mouse up
 //or you moving mouse outside of the object canvas.
-canvas.addEventListener("touchend",stop);
-canvas.addEventListener("mouseup",stop);
-canvas.addEventListener("mouseout",stop);
+canvas.addEventListener("pointerup",stop);
+canvas.addEventListener("pointerout",stop);
 
 //function that starts a path
-function start(event,mouseEvent){
-   is_drawing = true;
-   context.beginPath();
-   //set start cordinat on canvas for path.
-   if(phone){
-    context.moveTo(mouseEvent.clientX, mouseEvent.clientY);
-    brush(mouseEvent);
-   }else{
-    context.moveTo(event.clientX, event.clientY);
-    brush(event);
-   }
-   //run brush one time so that if you click one time you will still have drawn a dot.
+function start(mouse){
+    is_drawing = true;
+    context.beginPath();
+    //set start cordinat on canvas for path.
+    context.moveTo(mouse.x, mouse.y);
+    brush(mouse);
+
+    //send to server that we are starting to draw
+    socket.emit("draw", {action: "start", x: mouse.x, y: mouse.y, color: draw_color, width: draw_withd});
+ 
+    //run brush one time so that if you click one time you will still have drawn a dot.
 }
 
 //draw function is called continuesly and depending on the selected tool do different stuff.
-function draw(event,mouseEvent) {
+function draw(mouse) {
     if (is_drawing) {
         if (selectedTool === 1){
-            brush(event,mouseEvent);
+            brush(mouse);
+
+            //send to server that we are drawing
+            socket.emit("draw", {action: "draw", x: mouse.x, y: mouse.y, color: draw_color, width: draw_withd});
         }else if (selectedTool === 2){
         
         }
@@ -96,18 +117,14 @@ function draw(event,mouseEvent) {
 }
 
 //brush is one of the selected tools. And can draw.
-function brush(event,mouseEvent){
+function brush(mouse){
     context.strokeStyle = draw_color;
     context.lineWidth = draw_withd;
     context.lineCap = "round";
     context.lineJoin = "round";
-    if(phone){
-        context.lineTo(mouseEvent.clientX, mouseEvent.clientY);
-        context.stroke();
-    }else{
-    context.lineTo(event.clientX, event.clientY);
+    context.lineTo(mouse.x, mouse.y);
     context.stroke();
-    }
+   
 }
 
 //stop is the function that is called when we want to stop drawing
@@ -116,6 +133,9 @@ function stop(event){
         context.stroke();
         context.closePath();
         is_drawing = false;
+
+        //send to server that we are done drawing
+        socket.emit("draw", {action: "stop", x: mouse.x, y: mouse.y, color: draw_color, width: draw_withd});
 
         //here we with the consept of a stack save a image of the canvas in undoarray
         undoarray.push(context.getImageData(0,0,canvas.width,canvas.height));
@@ -129,6 +149,8 @@ function clearCanvas() {
     context.clearRect(0,0,canvas.width,canvas.height);
     context.fillRect(0,0,canvas.width,canvas.height);
 
+    socket.emit("clearCanvas");
+
     //resets undofunction
     undoarray = [];
     undoindex = -1;
@@ -138,7 +160,7 @@ function clearCanvas() {
 function undo() {
     //if the undoarrays index is 0 or less then we might as well clear canvas.
     if(undoindex <= 0){
-    clearCanvas();
+        clearCanvas();
     } else {
         //else we just want to go one back therefore remove the top layer of the stack
         undoindex -=1;
@@ -148,10 +170,37 @@ function undo() {
     }
 }
 
-window.addEventListener('resize',function(){
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight-5;
+window.addEventListener("resize",function(){
+    width = canvas.offsetWidth;
+    height = canvas.offsetHeight;
+    
+    canvas.width = width;
+    canvas.height = height;
+    console.log(width,height);
     context.fillStyle = startBackground;
     context.fillRect(0,0,canvas.width,canvas.height);
     context.putImageData(undoarray[undoindex],0,0);
+});
+
+// socket.io receive data from server and draw it on canvas
+socket.on("draw", (data) => {
+    const { action, x, y, color, width } = data;
+
+    context.strokeStyle = color;
+    context.lineWidth = width;
+
+    if (action === "start") {
+        context.beginPath();
+        context.moveTo(x, y);
+    } else if (action === "draw") {
+        context.lineTo(x, y);
+        context.stroke();
+    } else if (action === "stop") {
+        context.closePath();
+    }
+});
+
+// socket.io clear canvas
+socket.on("clearCanvas", () => {
+    clearCanvas();
 });
