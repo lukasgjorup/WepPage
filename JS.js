@@ -1,5 +1,6 @@
 const canvas = document.getElementById("canvas");
 const clear = document.querySelector("#clearCanvas");
+const undoB = document.querySelector("#undoB");
 let width = canvas.offsetWidth;
 let height = canvas.offsetHeight;
 canvas.width = width;
@@ -23,6 +24,7 @@ const mouse ={
 };
 
 clear.addEventListener("click",clearCanvas);
+undoB.addEventListener("click",undo);
 
 canvas.addEventListener("pointerdown",function(event){
     event.preventDefault();
