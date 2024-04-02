@@ -1,81 +1,8 @@
-*{
-    margin: 0;
-    padding: 0;
-    /*border-box means that padding and border is also within the objects hight and witdh*/
-    box-sizing: border-box;
-
-
-}
-body{
-    overflow-x:hidden;
-    touch-action:none;
-    background-color: grey;
-    max-width: 100%;
-    max-height: 100%;
-    overflow-x: hidden;
-}
-.disable-dbl-tap-zoom {
-    touch-action: manipulation;
-}
 #canvas{
     touch-action:none;
     width: 100%;
     height: 100%;
-    touch-action:none;
 }
-
-.nav{
-    touch-action:none;
-    width: auto;
-    height: 8%;
-    position: fixed;
-    top: 1%;
-    left: 50%;
-    transform: translate(-50%);
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    transition: opacity .5s;
-    background: linear-gradient(to right, blue,red);
-    padding: 10px;
-    border-radius: 10px;
-    border: 3px solid white;
-    
-}
-
-.nav button,input{
-    margin: 5px;
-    border: 3px solid white;
-}
-
-nav:hover{
-    cursor: pointer;
-}
-
-.options{
-    display: flex;
-    
-}
-.options button{
-    border-radius: 20%;
-    background: linear-gradient(to right, rgb(207, 106, 106),rgb(97, 97, 223));
-    
-}
-
-
-.colors{
-    display: flex;
-}
-
-.color{
-    border-radius: 50%;
-    height: 35px;
-    width: 35px;
-}
-
-#colorpick{
-    border-radius: 20%;
-    background: linear-gradient(to right, rgb(207, 106, 106),rgb(97, 97, 223));
-    height: 50px;
-    width: 100px;
+body{
+    background-color: grey;
 }
