@@ -66,15 +66,15 @@ canvas.addEventListener("touchmove", function (event) {
 canvas.addEventListener("touchend",stop);
 */
 canvas.addEventListener("pointerdown", function(event){
-    mouse.x = event.x - canvasPosition.left;
-    mouse.y = event.y - canvasPosition.top;
+    mouse.x = event.clientX - canvasPosition.left;
+    mouse.y = event.clientY - canvasPosition.top;
     
     start(mouse);
 });
 
 canvas.addEventListener("pointermove", function(event){
-    mouse.x = event.x - canvasPosition.left;
-    mouse.y = event.y - canvasPosition.top;
+    mouse.x = event.clientX - canvasPosition.left;
+    mouse.y = event.clientY - canvasPosition.top;
 
     draw(mouse);
 });
