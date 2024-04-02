@@ -17,10 +17,23 @@ const mouse ={
 };
 
 canvas.addEventListener("pointerdown",function(event){
+    event.preventDefault();
     mouse.x = event.clientX - canvasPosition.left;
     mouse.y = event.clientY - canvasPosition.top;
     dot(event);
+    canvas.addEventListener("pointermove", onMouseMove);
+    canvas.addEventListener("pointerup", removeMouseMove);
 })
+
+function onMouseMove(event) {
+    mouse.x = event.clientX - canvasPosition.left;
+    mouse.y = event.clientY - canvasPosition.top;
+    draw();
+}
+
+function removeMouseMove() {
+    canvas.removeEventListener("pointermove", onMouseMove);
+}
 
 function dot(input){
     context.beginPath();
