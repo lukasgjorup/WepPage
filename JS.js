@@ -3,7 +3,6 @@ const canvas = document.getElementById("canvas");
 let width = canvas.offsetWidth;
 let height = canvas.offsetHeight;
 
-
 canvas.width = width;
 canvas.height = height;
 //initilize some variables essential for the program
