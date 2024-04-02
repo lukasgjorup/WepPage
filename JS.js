@@ -6,10 +6,15 @@ canvas.height = height;
 const startBackground = "white";
 let draw_color = "black";
 let draw_withd = 50;
+let is_drawing = false;
 const context = canvas.getContext("2d");
 context.fillStyle = startBackground;
 context.fillRect(0,0,canvas.width,canvas.height);
-const canvasPosition = canvas.getBoundingClientRect();
+let canvasPosition = canvas.getBoundingClientRect();
+
+let undoarray = [];
+let undoindex = -1;
+
 
 const mouse ={
     x : 0,
@@ -32,6 +37,8 @@ function onMouseMove(event) {
 }
 
 function removeMouseMove() {
+    undoarray.push(context.getImageData(0,0,canvas.width,canvas.height));
+    undoindex +=1;
     canvas.removeEventListener("pointermove", onMouseMove);
 }
 
@@ -49,4 +56,43 @@ function draw(){
     context.lineJoin = "round";
     context.lineTo(mouse.x, mouse.y);
     context.stroke();
+}
+
+function clearCanvas() {
+    context.fillStyle = startBackground;
+    context.clearRect(0,0,canvas.width,canvas.height);
+    context.fillRect(0,0,canvas.width,canvas.height);
+
+    undoarray = [];
+    undoindex = -1;
+}
+
+function undo() {
+    //if the undoarrays index is 0 or less then we might as well clear canvas.
+    if(undoindex <= 0){
+        clearCanvas();
+    } else {
+        //else we just want to go one back therefore remove the top layer of the stack
+        undoindex -=1;
+        undoarray.pop();
+        //here we wanty to insert the last saved in the undo into the canvas.
+        context.putImageData(undoarray[undoindex],0,0);
+    }
+}
+
+window.addEventListener("resize",function(){
+    width = canvas.offsetWidth;
+    height = canvas.offsetHeight;
+    
+    canvas.width = width;
+    canvas.height = height;
+    console.log(width,height);
+    context.fillStyle = startBackground;
+    context.fillRect(0,0,canvas.width,canvas.height);
+    context.putImageData(undoarray[undoindex],0,0);
+    canvasPosition = canvas.getBoundingClientRect();
+});
+
+function changeColor(element){
+    draw_color = element.style.backgroundColor;
 }
