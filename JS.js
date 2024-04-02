@@ -3,8 +3,6 @@ const canvas = document.getElementById("canvas");
 let width = canvas.offsetWidth;
 let height = canvas.offsetHeight;
 
-// io
-const socket = io("http://localhost:3000");
 
 canvas.width = width;
 canvas.height = height;
@@ -95,9 +93,7 @@ function start(mouse){
     context.moveTo(mouse.x, mouse.y);
     brush(mouse);
 
-    //send to server that we are starting to draw
-    socket.emit("draw", {action: "start", x: mouse.x, y: mouse.y, color: draw_color, width: draw_withd});
- 
+
     //run brush one time so that if you click one time you will still have drawn a dot.
 }
 
@@ -107,8 +103,6 @@ function draw(mouse) {
         if (selectedTool === 1){
             brush(mouse);
 
-            //send to server that we are drawing
-            socket.emit("draw", {action: "draw", x: mouse.x, y: mouse.y, color: draw_color, width: draw_withd});
         }else if (selectedTool === 2){
         
         }
@@ -134,9 +128,6 @@ function stop(event){
         context.closePath();
         is_drawing = false;
 
-        //send to server that we are done drawing
-        socket.emit("draw", {action: "stop", x: mouse.x, y: mouse.y, color: draw_color, width: draw_withd});
-
         //here we with the consept of a stack save a image of the canvas in undoarray
         undoarray.push(context.getImageData(0,0,canvas.width,canvas.height));
         undoindex +=1;
@@ -149,7 +140,6 @@ function clearCanvas() {
     context.clearRect(0,0,canvas.width,canvas.height);
     context.fillRect(0,0,canvas.width,canvas.height);
 
-    socket.emit("clearCanvas");
 
     //resets undofunction
     undoarray = [];
@@ -180,27 +170,4 @@ window.addEventListener("resize",function(){
     context.fillStyle = startBackground;
     context.fillRect(0,0,canvas.width,canvas.height);
     context.putImageData(undoarray[undoindex],0,0);
-});
-
-// socket.io receive data from server and draw it on canvas
-socket.on("draw", (data) => {
-    const { action, x, y, color, width } = data;
-
-    context.strokeStyle = color;
-    context.lineWidth = width;
-
-    if (action === "start") {
-        context.beginPath();
-        context.moveTo(x, y);
-    } else if (action === "draw") {
-        context.lineTo(x, y);
-        context.stroke();
-    } else if (action === "stop") {
-        context.closePath();
-    }
-});
-
-// socket.io clear canvas
-socket.on("clearCanvas", () => {
-    clearCanvas();
 });
