@@ -1,6 +1,7 @@
 const canvas = document.getElementById("canvas");
 const clear = document.querySelector("#clearCanvas");
 const undoB = document.querySelector("#undoB");
+const uploadInput = document.getElementById("uploadInput");
 let width = canvas.offsetWidth;
 let height = canvas.offsetHeight;
 canvas.width = width;
@@ -13,27 +14,98 @@ const context = canvas.getContext("2d");
 context.fillStyle = startBackground;
 context.fillRect(0,0,canvas.width,canvas.height);
 let canvasPosition = canvas.getBoundingClientRect();
+let firstClick =  { x: 0, y: 0 };
+let secondClick = { x: 0, y: 0 };
+let clickCount = 0;
+var drawing = true;
+
+let imageinputters=[];
 
 let undoarray = [];
 let undoindex = -1;
-
 
 const mouse ={
     x : 0,
     y : 0,
 };
 
+
+
+
+class Imageinputter{
+constructor(canvas,canvasPosition,context){
+    this.canvas = canvas;
+        this.canvasPosition = canvasPosition;
+        this.context = context;
+        this.clickCount = 0;
+        this.firstClick = { x: 0, y: 0 };
+        this.secondClick = { x: 0, y: 0 };
+}
+
+handleFileSelect(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    // Wrap the logic in a Promise
+    const waitForClicks = new Promise(resolve => {
+        this.canvas.addEventListener("click", (event) => {
+            if (this.clickCount === 0) {
+                // First click
+                this.firstClick.x = event.clientX - this.canvasPosition.left;
+                this.firstClick.y = event.clientY - this.canvasPosition.top;
+                this.clickCount++;
+            } else if (this.clickCount === 1) {
+                // Second click
+                this.secondClick.x = event.clientX - this.canvasPosition.left;
+                this.secondClick.y = event.clientY - this.canvasPosition.top;
+                this.clickCount++;
+                // Resolve the Promise when both clicks are registered
+                resolve();
+            }
+        });
+    });
+
+    // Wait for the Promise to resolve
+    waitForClicks.then(() => {
+        // Once both clicks are registered, proceed with reading and drawing the image
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                // Draw the image after both clicks are registered
+                const imgWidth = this.secondClick.x - this.firstClick.x;
+                const imgHeight = this.secondClick.y - this.firstClick.y;
+                this.context.drawImage(img, this.firstClick.x, this.firstClick.y, imgWidth, imgHeight);
+                // Reset click count and clicks
+                this.clickCount = 0;
+                this.firstClick = { x: 0, y: 0 };
+                this.secondClick = { x: 0, y: 0 };
+            };
+        };
+        reader.readAsDataURL(file);
+    });
+}
+}
+
+
 clear.addEventListener("click",clearCanvas);
 undoB.addEventListener("click",undo);
+uploadInput.addEventListener("change", function(event){
+    const imageinputter = new Imageinputter(canvas, canvasPosition, context);
+    imageinputter.handleFileSelect(event);
+    imageinputters.push(imageinputter);
+});
 
-canvas.addEventListener("pointerdown",function(event){
-    event.preventDefault();
-    mouse.x = event.clientX - canvasPosition.left;
-    mouse.y = event.clientY - canvasPosition.top;
-    dot(event);
-    canvas.addEventListener("pointermove", onMouseMove);
-    canvas.addEventListener("pointerup", removeMouseMove);
-})
+if (drawing) {
+    canvas.addEventListener("pointerdown", function(event){
+        event.preventDefault();
+        mouse.x = event.clientX - canvasPosition.left;
+        mouse.y = event.clientY - canvasPosition.top;
+        dot(event);
+        canvas.addEventListener("pointermove", onMouseMove);
+        canvas.addEventListener("pointerup", removeMouseMove);
+    });
+}
 
 function onMouseMove(event) {
     mouse.x = event.clientX - canvasPosition.left;
